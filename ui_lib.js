@@ -128,15 +128,22 @@ const UI = (function () {
             command
         ) {
             const template = `<div class="ContextControls__item____QDkFMH fonts__font-regular___Sxp1xjo type__type-small___pMQhMQO">
-                                  <span><span class="ContextControls__cmd___BXQDTL_">{{:shortBold}}</span>
-                                      {{:shortNormal}}</span><span class="ContextControls__label___xomE3De">: {{:longText}}
-                                  </span>
+                                <span>
+                                    <span class="ContextControls__cmd___BXQDTL_">{{:shortBold}}</span>
+                                    {{:shortNormal}}
+                                </span>
+                                <span class="ContextControls__label___xomE3De">
+                                    : {{:longText}}
+                                </span>
                              </div>`;
-            let result = template
+            const result = template
                 .replace("{{:shortBold}}", shortTextBold)
                 .replace("{{:shortNormal}}", shortTextNormal)
                 .replace("{{:longText}}", longText);
-            let node = createNode(result);
+            const node = createNode(result);
+            if (!longText || longText === "") {
+                node.children[1].remove();
+            }
             node.onclick = () => {
                 command();
             };
