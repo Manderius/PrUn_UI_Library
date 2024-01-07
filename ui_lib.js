@@ -87,7 +87,7 @@ const UI = (function () {
         element;
 
         // Quick buttons bar, direct parent of buttons
-        #contextControlsSelector = ".ContextControls__container___dzDODeW";
+        #contextControlsRowClass = "ContextControls__container___dzDODeW";
 
         constructor(element) {
             this.element = element;
@@ -100,14 +100,14 @@ const UI = (function () {
 
         getQuickButtonBar() {
             const bar = this.element.children[1];
-            return bar.className === this.#contextControlsSelector ? bar : null;
+            return bar.className === this.#contextControlsRowClass ? bar : null;
         }
 
         addQuickButton(shortBoldText, shortNormalText, longText, onClick) {
             let bar = this.getQuickButtonBar();
             if (bar === null) {
                 bar = createNode(
-                    `<div class="${this.#contextControlsSelector}"></div>`
+                    `<div class="${this.#contextControlsRowClass}"></div>`
                 );
                 this.element.insertBefore(bar, this.element.children[1]);
             }
