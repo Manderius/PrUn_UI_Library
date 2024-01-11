@@ -80,7 +80,6 @@ const UI = (function () {
     //#endregion
 
     //#region Buffers
-
     class Buffer {
         title;
         command;
@@ -92,10 +91,19 @@ const UI = (function () {
         constructor(element) {
             this.element = element;
             this.title =
-                element.children[0].children[0].innerHTML.toUpperCase();
-            this.command = element.children[0].children[1].innerHTML
+                element.children[0].children[0].innerText.toUpperCase();
+            this.command = element.children[0].children[1].innerText
                 .toUpperCase()
                 .split(" ");
+        }
+
+        static findFirstByTitle(title) {
+            const allBuffers = document.querySelectorAll(_bufferSelector);
+            for (let i = 0; i < allBuffers.length; i++) {
+                const buffer = new Buffer(allBuffers[i].parentElement);
+                if (buffer.title.indexOf(title.toUpperCase()) !== -1)
+                    return buffer;
+            }
         }
 
         getQuickButtonBar() {
@@ -149,6 +157,26 @@ const UI = (function () {
             };
             return node;
         }
+
+        isPopup() {
+            return (
+                this.element.parentElement.parentElement.parentElement.id ===
+                "TOUR_TARGET_EMPTY_BUFFER"
+            );
+        }
+
+        close() {
+            if (this.isPopup()) {
+                this.element.parentElement.parentElement.parentElement
+                    .querySelector("div[title='close']")
+                    .click();
+            }
+        }
+
+        replaceWith(command) {
+            submitCommandToEmptyBufferOnceCreated(command);
+            this.element.querySelector("button[alt='divide']").click();
+        }
     }
     ADDON.Buffer = Buffer;
 
@@ -179,7 +207,7 @@ const UI = (function () {
         input.dispatchEvent(inputEvent);
     };
 
-    ADDON.showBuffer = (command) => {
+    const submitCommandToEmptyBufferOnceCreated = (command) => {
         const addSubmitCommand = (input, cmd) => {
             changeValue(input, cmd);
             input.parentElement.parentElement.requestSubmit();
@@ -189,6 +217,10 @@ const UI = (function () {
         ADDON.onElementCreated(_emptyBufferInputSelector, (elem) =>
             addSubmitCommand(elem, command)
         );
+    };
+
+    ADDON.showBuffer = (command) => {
+        submitCommandToEmptyBufferOnceCreated(command);
 
         // Create new Buffer
         document.querySelector(_newBufferButtonSelector).click();
